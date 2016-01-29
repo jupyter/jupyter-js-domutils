@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.'use strict';
 
 import {
-  ICommand
+  Command
 } from 'phosphor-command';
 
 import './dialog.css';
@@ -92,7 +92,7 @@ interface IButtonItem {
   /**
    * The command for the button.
    */
-  command?: ICommand;
+  command?: Command;
 
   /**
    * The args object for the button command.
