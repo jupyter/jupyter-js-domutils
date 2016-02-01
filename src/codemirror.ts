@@ -54,7 +54,7 @@ function loadInfo(editor: CodeMirror.Editor, info: CodeMirror.modespec): void {
   if (CodeMirror.modes.hasOwnProperty(info.mode)) {
     editor.setOption('mode', info.mime);
   } else {
-    requirejs([`codemirror/mode/${info.mode}/${info.mode}`], () => {
+    require([`codemirror/mode/${info.mode}/${info.mode}`], () => {
       editor.setOption('mode', info.mime);
     });
   }
