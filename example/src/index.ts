@@ -6,7 +6,7 @@
 'use strict';
 
 import {
-  showDialog, generateClipboardEvent
+  showDialog, generateClipboardEvent, copyToClipboard
 } from '../../lib';
 
 
@@ -19,14 +19,14 @@ function main(): void {
   let button2 = document.createElement('button');
   button2.textContent = 'Copy foo to clipboard';
   button2.onclick = () => {
-    generateClipboardEvent(button2, { text: 'foo' });
+    copyToClipboard('foo');
   }
   let button3 = document.createElement('button');
-  button3.textContent = 'Custom copy event';
+  button3.textContent = 'Custom cut event';
   button3.onclick = () => {
-    generateClipboardEvent(button3);
+    generateClipboardEvent(button3, 'cut');
   }
-  (button3 as any).oncopy = (event: ClipboardEvent) => {
+  (button3 as any).oncut = (event: ClipboardEvent) => {
     let data = event.clipboardData || (window as any).clipboardData;
     data.setData('text', 'Custom text data');
     if (event.clipboardData) {

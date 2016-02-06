@@ -3,37 +3,39 @@
 'use strict';
 
 /**
- * Options for generating Clipboard events.
+ * Copy text to the system clipboard.
+ *
+ * #### Notes
+ * This can only be called in response to a user input event.
  */
 export
-interface IClipboardEventOptions {
-  /**
-   * The type of event: 'copy' (default) or 'cut'.
-   */
-  type?: string;
-
-  /**
-   * The optional text to put on the clipboard.
-   */
-  text?: string;
+function copyToClipboard(text: string): void {
+  let node = document.body;
+  let handler = (event: ClipboardEvent) => {
+    let data = event.clipboardData || (window as any).clipboardData;
+    data.setData('text', text);
+    event.preventDefault();
+    node.removeEventListener('copy', handler);
+  };
+  node.addEventListener('copy', handler);
+  generateClipboardEvent(node);
 }
 
 
 /**
  * Generate a clipboard event on a node.
  *
+ * @param node - The element on which to generate the event.
+ *
+ * @param type - The type of event to generate: `'copy'` or `'cut'`.
+ *   `'paste'` events cannot be programmatically generated.
+ *
  * #### Notes
  * This can only be called in response to a user input event.
- * Paste events cannot be generated.
- * If `text` is given, that text will be added to the clipboard.
- * Otherwise, the text will be the node contents unless the node
- * specifies a `copy` event listener.
  */
 export
-function generateClipboardEvent(node: HTMLElement, options?: IClipboardEventOptions): void {
+function generateClipboardEvent(node: HTMLElement, type='copy'): void {
   // http://stackoverflow.com/a/5210367
-  options = options || {};
-  let type = options.type || 'copy';
 
   // Identify selected text.
   var sel = window.getSelection();
@@ -49,17 +51,6 @@ function generateClipboardEvent(node: HTMLElement, options?: IClipboardEventOpti
   range.selectNodeContents(node);
   sel.removeAllRanges();
   sel.addRange(range);
-
-  // If given, add the desired text to the clipboard during the event.
-  if (options.text) {
-    let handler = (event: ClipboardEvent) => {
-      let data = event.clipboardData || (window as any).clipboardData;
-      data.setData('text', options.text);
-      event.preventDefault();
-      node.removeEventListener(type, handler);
-    };
-    node.addEventListener(type, handler);
-  }
 
   // Execute the command.
   document.execCommand(type);
