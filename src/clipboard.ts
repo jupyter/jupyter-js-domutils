@@ -2,7 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 'use strict';
 
-
 /**
  * Options for generating Clipboard events.
  */
@@ -17,30 +16,24 @@ interface IClipboardEventOptions {
    * The optional text to put on the clipboard.
    */
   text?: string;
-
-  /**
-   * The target element (defaults to `document`).
-   */
-  node?: HTMLElement;
 }
 
 
 /**
- * Generate a custom clipboard event.
+ * Generate a clipboard event on a node.
  *
  * #### Notes
  * This can only be called in response to a user input event.
  * Paste events cannot be generated.
- * Either a node or text (or both) must be specified.
+ * If `text` is given, that text will be added to the clipboard.
+ * Otherwise, the text will be the node contents unless the node
+ * specifies a `copy` event listener.
  */
 export
-function generateClipboardEvent(options: IClipboardEventOptions): void {
+function generateClipboardEvent(node: HTMLElement, options?: IClipboardEventOptions): void {
   // http://stackoverflow.com/a/5210367
+  options = options || {};
   let type = options.type || 'copy';
-  if (!options.node && !options.text) {
-    throw Error('Must specify either a node or text to put on clipboard');
-  }
-  let node = options.node || document.body;
 
   // Identify selected text.
   var sel = window.getSelection();
@@ -51,7 +44,7 @@ function generateClipboardEvent(options: IClipboardEventOptions): void {
     savedRanges[i] = sel.getRangeAt(i).cloneRange();
   }
 
-  // Select the node's content.
+  // Select the node content.
   var range = document.createRange();
   range.selectNodeContents(node);
   sel.removeAllRanges();
