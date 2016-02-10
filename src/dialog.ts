@@ -1,10 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.'use strict';
 
-import {
-  Command
-} from 'phosphor-command';
-
 import './dialog.css';
 
 
@@ -90,14 +86,14 @@ interface IButtonItem {
   className?: string;
 
   /**
-   * The command for the button.
+   * The handler for the button.
    */
-  command?: Command;
+  handler?: (args: any) => void;
 
   /**
-   * The args object for the button command.
+   * The arguments to pass to the handler.
    */
-  commandArgs?: any;
+  args?: any;
 }
 
 
@@ -172,9 +168,7 @@ function showDialog(options: IDialogOptions): Promise<IButtonItem>{
         if (node.contains(evt.target as HTMLElement)) {
           host.removeChild(dialog);
           let button = buttons[buttonNodes.indexOf(node)];
-          if (button.command && button.command.isEnabled) {
-            button.command.execute(button.commandArgs);
-          }
+          if (button.handler) button.handler(button.args);
           resolve(button);
         }
       });
