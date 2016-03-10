@@ -1,5 +1,5 @@
-Jupyter JS Domutils
-===================
+DEPRECATED - Jupyter JS Domutils
+================================
 
 DOM utilities for the Jupyter frontend.
 
